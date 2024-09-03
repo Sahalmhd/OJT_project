@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Object Detection App</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f2f5;
+        }
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            border-radius: 50px;
+            padding: 12px 24px;
+            margin: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+        }
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Welcome to the Object Detection App</h1>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <!-- Features Card -->
+                <div class="card shadow mb-4">
+                    <div class="card-header text-center">
+                        <h4 class="mb-0">Explore Our Features</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <p>Select a feature to get started:</p>
+                        <div class="btn-group-vertical">
+                            <a href="{% url 'upload_or_stream' %}?feature=currency_detection" class="btn btn-primary btn-lg mb-2">Currency Detection</a>
+                            <a href="{% url 'upload_or_stream' %}?feature=text_reading" class="btn btn-primary btn-lg mb-2">Text Reading</a>
+                            <a href="{% url 'upload_or_stream' %}?feature=object_identification" class="btn btn-primary btn-lg mb-2">Object Identification</a>
+                            <a href="{% url 'upload_or_stream' %}?feature=spatial_description" class="btn btn-primary btn-lg mb-2">Spatial Description</a>
+                            <a href="{% url 'upload_or_stream' %}?feature=facial_recognition" class="btn btn-primary btn-lg mb-2">Facial Recognition</a>
+                        </div>
+                    </div>
+                </div>
+<!--  -->
+
+    <!-- Include jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#start-camera').on('click', function() {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        $('#video').get(0).srcObject = stream;
+                    })
+                    .catch(function(error) {
+                        console.error('Error accessing camera:', error);
+                    });
+            });
+
+            $('#stop-camera').on('click', function() {
+                let video = $('#video').get(0);
+                let stream = video.srcObject;
+                if (stream) {
+                    let tracks = stream.getTracks();
+                    tracks.forEach(function(track) {
+                        track.stop();
+                    });
+                    video.srcObject = null;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
