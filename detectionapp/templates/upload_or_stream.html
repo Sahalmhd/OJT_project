@@ -63,12 +63,12 @@
                         <h4 class="mb-0">Upload Image or Stream Video</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{% url 'upload_or_stream' %}" method="post" enctype="multipart/form-data">
+                        <form action="{% url 'upload_or_stream' %}" method="post" enctype="multipart/form-data" id="upload-form">
                             {% csrf_token %}
                             <input type="hidden" name="feature" value="{{ feature }}">
                             <div class="form-group">
                                 <label for="image">Upload Image</label>
-                                <input type="file" class="form-control-file" id="image" name="image">
+                                <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
                             </div>
                             <button type="submit" class="btn btn-primary btn-lg">Upload Image</button>
                         </form>
@@ -83,6 +83,8 @@
                         <div class="video-container mt-3">
                             <video id="video" autoplay></video>
                         </div>
+
+                        <div id="error-message" class="text-danger text-center mt-3"></div>
                     </div>
                 </div>
             </div>
@@ -101,6 +103,7 @@
                 })
                 .catch(function(error) {
                     console.error('Error accessing camera:', error);
+                    document.getElementById('error-message').textContent = 'Unable to access camera. Please check your permissions.';
                 });
         });
 
@@ -113,6 +116,15 @@
                     track.stop();
                 });
                 video.srcObject = null;
+            }
+        });
+
+        // Optional: Form validation
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            let fileInput = document.getElementById('image');
+            if (!fileInput.files.length) {
+                event.preventDefault();
+                document.getElementById('error-message').textContent = 'Please select an image file to upload.';
             }
         });
     </script>
