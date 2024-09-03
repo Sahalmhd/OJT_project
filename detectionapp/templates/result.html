@@ -36,6 +36,11 @@
             font-size: 1rem;
             line-height: 1.5;
         }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
         .container {
             padding: 0 1rem;
         }
@@ -58,6 +63,12 @@
             </div>
             <div class="card-body">
                 <pre>{{ result }}</pre>
+                {% if image_url %}
+                    <h5 class="mt-4">Detected Image:</h5>
+                    <img src="{{ image_url }}" alt="Detected Image">
+                {% else %}
+                    <p>No image to display.</p>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -96,6 +96,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
+        // Handle start streaming
         document.getElementById('start-stream').addEventListener('click', function() {
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(function(stream) {
@@ -107,6 +108,7 @@
                 });
         });
 
+        // Handle stop streaming
         document.getElementById('stop-stream').addEventListener('click', function() {
             let video = document.getElementById('video');
             let stream = video.srcObject;

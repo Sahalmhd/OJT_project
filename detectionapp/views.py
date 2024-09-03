@@ -20,15 +20,12 @@ def upload_or_stream(request):
         if 'image' in request.FILES:
             image = request.FILES.get('image')
 
-            # Generate a random filename with the same extension as the uploaded file
             extension = os.path.splitext(image.name)[1]
             random_filename = f"{uuid.uuid4()}{extension}"
             image_path = os.path.join(settings.MEDIA_ROOT, 'images', random_filename)
 
-            # Create directories if they don't exist
             os.makedirs(os.path.dirname(image_path), exist_ok=True)
 
-            # Save the uploaded file
             try:
                 with open(image_path, 'wb+') as destination:
                     for chunk in image.chunks():
@@ -38,27 +35,31 @@ def upload_or_stream(request):
 
             print(f"Saved image to {image_path}")
 
-            # Call the appropriate function based on the selected feature
             try:
                 if feature == 'currency_detection':
-                    result = detect_currency(image_path)
+                    result, result_filename = detect_currency(image_path)
                 elif feature == 'text_reading':
                     result = read_text(image_path)
+                    result_filename = None
                 elif feature == 'object_identification':
                     result = identify_objects(image_path)
+                    result_filename = None
                 elif feature == 'spatial_description':
                     result = describe_spatial(image_path)
+                    result_filename = None
                 elif feature == 'facial_recognition':
-                    result = recognize_face(image_path)
+                    result, result_filename = recognize_face(image_path)
                 else:
                     result = "Invalid feature specified"
+                    result_filename = None
             except Exception as e:
                 result = f"An error occurred: {str(e)}"
+                result_filename = None
 
             print(f"Feature result: {result}")
 
-            # Redirect to result view with result as query parameter
-            return HttpResponseRedirect(f"{reverse('result_view')}?result={result}")
+            # Redirect to result view with result and filename as query parameters
+            return HttpResponseRedirect(f"{reverse('result_view')}?result={result}&image_url=/media/{result_filename if result_filename else ''}")
         else:
             return JsonResponse({'error': 'No image file provided'}, status=400)
 
@@ -66,4 +67,6 @@ def upload_or_stream(request):
 
 def result_view(request):
     result = request.GET.get('result', 'No result available')
-    return render(request, 'result.html', {'result': result})
+    image_url = request.GET.get('image_url', '')  # Get the image URL from query parameters if available
+
+    return render(request, 'result.html', {'result': result, 'image_url': image_url})
